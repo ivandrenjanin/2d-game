@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.27)
-project(2d-rogue-like)
+project(2dgame)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -18,7 +18,6 @@ if (NOT raylib_FOUND) # If there's none, fetch and build raylib
     )
     FetchContent_GetProperties(raylib)
     if (NOT raylib_POPULATED) # Have we downloaded raylib yet?
-        set(FETCHCONTENT_QUIET NO)
         FetchContent_Populate(raylib)
         set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE) # don't build the supplied examples
         add_subdirectory(${raylib_SOURCE_DIR} ${raylib_BINARY_DIR})
@@ -32,14 +31,18 @@ if (NOT EnTT_FOUND)
             GIT_REPOSITORY https://github.com/skypjack/entt
             GIT_TAG v3.12.2
     )
-    FetchContent_MakeAvailable(entt)
+    if (NOT EnTT_POPULATED)
+        FetchContent_Populate(EnTT)
+        set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE) # don't build the supplied examples
+        add_subdirectory(${EnTT_SOURCE_DIR} ${EnTT_BINARY_DIR})
+    endif ()
 endif ()
 # Our Project
-add_executable(2d-rogue-like src/main.cpp)
+add_executable(2dgame src/main.cpp)
 
 target_link_libraries(${PROJECT_NAME} raylib EnTT::EnTT)
 
-target_include_directories(2d-rogue-like
+target_include_directories(2dgame
         PRIVATE
         "${CMAKE_SOURCE_DIR}/src"
 )

@@ -1,6 +1,12 @@
 #include <iostream>
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    try {
+
+    } catch(std::exception &e) {
+        std::cout << e.what() << '\n';
+        return 1;
+    }
+
     return 0;
 }
