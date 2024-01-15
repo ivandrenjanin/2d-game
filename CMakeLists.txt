@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.27)
-project(2dgame)
+project(2d-rogue-like)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -38,11 +38,11 @@ if (NOT EnTT_FOUND)
     endif ()
 endif ()
 # Our Project
-add_executable(2dgame src/main.cpp)
+add_executable(2d-rogue-like src/main.cpp)
 
 target_link_libraries(${PROJECT_NAME} raylib EnTT::EnTT)
 
-target_include_directories(2dgame
+target_include_directories(2d-rogue-like
         PRIVATE
         "${CMAKE_SOURCE_DIR}/src"
 )
