@@ -1,32 +1,21 @@
 #include "game.hpp"
 
-#include "components/position.hpp"
-#include "components/size.hpp"
-#include "components/speed.hpp"
-#include "components/velocity.hpp"
-#include "components/player.hpp"
 #include "raymath.h"
+#include "services/player_component_service.hpp"
 
 void Game::run() {
     InitWindow(screenWidth, screenHeight, "2dgame");
-
-    entt::entity const playerEntity = registry.create();
-    registry.emplace<Player>(playerEntity);
-    registry.emplace<Position>(playerEntity,
-                               Vector2{static_cast<float>(screenWidth) / 2, static_cast<float>(screenHeight) / 2});
-    registry.emplace<Velocity>(playerEntity, Vector2{0.0f, 0.0f});
-    registry.emplace<Size>(playerEntity, Vector2{20.0f, 20.0f});
-    registry.emplace<Speed>(playerEntity, 400.0f);
+    auto playerComponentService = entt::locator<PlayerComponentService>::value();
 
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(DARKBLUE);
         // Game Logic Start
-        auto view = registry.view<Player, Position, Velocity, Size, Speed>();
-        auto &&[position] = view.get<Position>(playerEntity);
-        auto &&[size] = view.get<Size>(playerEntity);
-        auto &&[velocity] = view.get<Velocity>(playerEntity);
-        auto &&[speed] = view.get<Speed>(playerEntity);
+        auto &&[position] = playerComponentService.getPosition(registry);
+        auto &&[size] = playerComponentService.getSize(registry);
+        auto &&[velocity] = playerComponentService.getVelocity(registry);
+        auto &&[speed] = playerComponentService.getSpeed(registry);
+        auto &&[hp] = playerComponentService.getHitPoints(registry);
 
         if (IsKeyDown(KEY_W)) {
             velocity.y -= 1;
@@ -52,9 +41,8 @@ void Game::run() {
                 position,
                 Vector2Scale(velocity, speed * GetFrameTime()));
 
-        DrawRectangleV(position, size, RED);
-
         auto playerCenter = Vector2{position.x + size.x / 2, position.y + size.y / 2};
+
 
         auto mouseDirection = Vector2Normalize(
                 Vector2Subtract(GetMousePosition(), playerCenter));
@@ -65,7 +53,9 @@ void Game::run() {
                 {size.x / 8, size.y / 8}
         );
 
+        DrawRectangleV(position, size, RED);
         DrawRectangleV(wP, {size.x / 4, size.y / 4}, YELLOW);
+        
         // Game Logic End
         EndDrawing();
     }
