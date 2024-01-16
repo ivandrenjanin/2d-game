@@ -55,6 +55,8 @@ add_executable(2d-rogue-like
         src/services/player_component_service.cpp
         src/services/player_component_service.hpp
         src/components/hit_points.hpp
+        src/factories/projectile_factory.hpp
+        src/components/projectile.hpp
 )
 
 target_link_libraries(${PROJECT_NAME} raylib EnTT::EnTT)
