@@ -2,6 +2,6 @@
 
 #include "raylib.h"
 
-struct Position {
-    Vector2 value;
+struct ShapeColor {
+    Color color;
 };

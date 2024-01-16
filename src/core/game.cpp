@@ -1,84 +1,59 @@
 #include "game.hpp"
 
 #include "raymath.h"
-#include "services/player_component_service.hpp"
 #include "factories/projectile_factory.hpp"
-#include "constants.hpp"
+#include "factories/player_factory.hpp"
+#include "factories/weapon_factory.hpp"
+#include "systems/input_system.hpp"
+#include "systems/movement_system.hpp"
 
 void Game::run() {
     InitWindow(screenWidth, screenHeight, "2dgame");
-    auto playerComponentService = entt::locator<PlayerComponentService>::value();
+    auto playerEntity = PlayerFactory::create(registry);
+    auto weaponEntity = WeaponFactory::create(registry, playerEntity);
+    InputSystem inputSystem;
+    MovementSystem movementSystem;
 
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(DARKBLUE);
         // Game Logic Start
-        auto &&[position] = playerComponentService.getPosition(registry);
-        auto &&[size] = playerComponentService.getSize(registry);
-        auto &&[velocity] = playerComponentService.getVelocity(registry);
-        auto &&[speed] = playerComponentService.getSpeed(registry);
-        auto &&[hp] = playerComponentService.getHitPoints(registry);
+        float deltaTime = GetFrameTime();
+        inputSystem.update(registry, deltaTime);
+        movementSystem.update(registry, deltaTime);
 
-        if (IsKeyDown(KEY_W)) {
-            velocity.y -= 1;
-        } else if (IsKeyDown(KEY_S)) {
-            velocity.y += 1;
-        } else {
-            velocity.y = 0;
-        }
-
-        if (IsKeyDown(KEY_A)) {
-            velocity.x -= 1;
-        } else if (IsKeyDown(KEY_D)) {
-            velocity.x += 1;
-        } else {
-            velocity.x = 0;
-        }
-
-        if (Vector2Length(velocity) > 0) {
-            velocity = Vector2Normalize(velocity);
-        }
-
-        position = Vector2Add(
-                position,
-                Vector2Scale(velocity, speed * GetFrameTime()));
-
-        auto playerCenter = Vector2{position.x + size.x / 2, position.y + size.y / 2};
-
-        auto mouseDirection = Vector2Normalize(
-                Vector2Subtract(GetMousePosition(), playerCenter));
-
-        auto weaponPosition = Vector2Subtract(
-                Vector2Add(playerCenter,
-                           Vector2Scale(mouseDirection, size.x)),
-                {size.x / 8, size.y / 8}
-        );
+        auto &&[position] = registry.get<Position>(playerEntity);
+        auto &&[size] = registry.get<Size>(playerEntity);
+        auto &&[color] = registry.get<ShapeColor>(playerEntity);
+        auto &&[weaponPosition] = registry.get<Position>(weaponEntity);
+        auto &&[weaponSize] = registry.get<Size>(weaponEntity);
+        auto &&[weaponColor] = registry.get<ShapeColor>(weaponEntity);
 
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+            auto playerCenter = Vector2{position.x + size.x / 2, position.y + size.y / 2};
+            auto mouseDirection = Vector2Normalize(
+                    Vector2Subtract(GetMousePosition(), playerCenter));
             ProjectileFactory::create(registry, weaponPosition, mouseDirection);
         }
 
-        auto view = registry.view<Position, Velocity, Projectile>();
+        auto view = registry.view<Position, Velocity, Projectile, SizeRadial, ShapeColor>();
         for (auto entity: view) {
             auto &&[pVelocity] = view.get<Velocity>(entity);
             auto &&[direction] = view.get<Projectile>(entity);
             auto &&[pPosition] = view.get<Position>(entity);
+            auto &&[radialSize] = view.get<SizeRadial>(entity);
+            auto &&[pColor] = view.get<ShapeColor>(entity);
 
-            pVelocity.x = direction.x * speed * 2 * GetFrameTime();
-            pVelocity.y = direction.y * speed * 2 * GetFrameTime();
-
-            pPosition = Vector2Add(pPosition, pVelocity);
-
-            if (pPosition.x < 0 || pPosition.x > (float)screenWidth || pPosition.y < 0 || pPosition.y > (float)screenHeight) {
+            if (pPosition.x<0 || pPosition.x>(float)screenWidth || pPosition.y<0 || pPosition.y>(float)
+            screenHeight) {
                 registry.destroy(entity);
             } else {
-                DrawCircleV(pPosition, 5, GREEN);
+                DrawCircleV(pPosition, radialSize, pColor);
             }
         }
 
-        DrawRectangleV(position, size, RED);
-        DrawRectangleV(weaponPosition, {size.x / 4, size.y / 4}, YELLOW);
-        DrawCircleV(playerCenter, 5, BLACK);
+        DrawRectangleV(position, size, color);
+        DrawRectangleV(weaponPosition, weaponSize, weaponColor);
         // Game Logic End
         EndDrawing();
     }

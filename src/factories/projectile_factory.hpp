@@ -5,6 +5,9 @@
 #include "components/position.hpp"
 #include "components/velocity.hpp"
 #include "components/projectile.hpp"
+#include "components/shape_color.hpp"
+#include "components/size_radial.hpp"
+#include "components/speed.hpp"
 
 class ProjectileFactory {
 public:
@@ -13,6 +16,10 @@ public:
         registry.emplace<Position>(projectile, position);
         registry.emplace<Velocity>(projectile);
         registry.emplace<Projectile>(projectile, direction);
+        registry.emplace<ShapeColor>(projectile, GREEN);
+        registry.emplace<SizeRadial>(projectile, 5.0f);
+        registry.emplace<Speed>(projectile, 800.00f);
+        
         return projectile;
     }
 };

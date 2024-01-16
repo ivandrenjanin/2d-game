@@ -52,11 +52,18 @@ add_executable(2d-rogue-like
         src/components/player.hpp
         src/factories/player_factory.hpp
         src/core/constants.hpp
-        src/services/player_component_service.cpp
-        src/services/player_component_service.hpp
         src/components/hit_points.hpp
         src/factories/projectile_factory.hpp
         src/components/projectile.hpp
+        src/systems/input_system.cpp
+        src/systems/input_system.hpp
+        src/components/weapon.hpp
+        src/factories/weapon_factory.hpp
+        src/components/weapon_holder.hpp
+        src/components/shape_color.hpp
+        src/components/size_radial.hpp
+        src/systems/movement_system.cpp
+        src/systems/movement_system.hpp
 )
 
 target_link_libraries(${PROJECT_NAME} raylib EnTT::EnTT)

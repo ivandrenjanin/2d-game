@@ -1,7 +1,7 @@
 #pragma once
 
-#include "raymath.h"
+#include "raylib.h"
 
 struct Projectile {
-    Vector2 direcction;
+    Vector2 direction;
 };
