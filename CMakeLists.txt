@@ -29,7 +29,7 @@ if (NOT entt_FOUND)
     FetchContent_Declare(
             entt
             GIT_REPOSITORY https://github.com/skypjack/entt
-            GIT_TAG v3.12.2
+            GIT_TAG v3.13.0
     )
 
     if (NOT entt_POPULATED)
