@@ -8,7 +8,6 @@
 #include "components/speed.hpp"
 #include "core/constants.hpp"
 #include "components/hit_points.hpp"
-#include "components/weapon_holder.hpp"
 #include "components/shape_color.hpp"
 
 class PlayerFactory {
@@ -21,7 +20,6 @@ public:
         registry.emplace<Size>(playerEntity, Vector2{40.0f, 40.0f});
         registry.emplace<Speed>(playerEntity, 400.0f);
         registry.emplace<HitPoints>(playerEntity, 50);
-        registry.emplace<WeaponHolder>(playerEntity);
         registry.emplace<ShapeColor>(playerEntity, RED);
         return playerEntity;
     }

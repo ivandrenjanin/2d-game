@@ -59,7 +59,6 @@ add_executable(2d-rogue-like
         src/systems/input_system.hpp
         src/components/weapon.hpp
         src/factories/weapon_factory.hpp
-        src/components/weapon_holder.hpp
         src/components/shape_color.hpp
         src/components/size_radial.hpp
         src/systems/movement_system.cpp
