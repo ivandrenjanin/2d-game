@@ -24,21 +24,33 @@ if (NOT raylib_FOUND) # If there's none, fetch and build raylib
     endif ()
 endif ()
 
-find_package(EnTT QUIET)
-if (NOT EnTT_FOUND)
+find_package(entt QUIET)
+if (NOT entt_FOUND)
     FetchContent_Declare(
             entt
             GIT_REPOSITORY https://github.com/skypjack/entt
             GIT_TAG v3.12.2
     )
-    if (NOT EnTT_POPULATED)
-        FetchContent_Populate(EnTT)
+
+    if (NOT entt_POPULATED)
+        FetchContent_Populate(entt)
         set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE) # don't build the supplied examples
-        add_subdirectory(${EnTT_SOURCE_DIR} ${EnTT_BINARY_DIR})
+        add_subdirectory(${entt_SOURCE_DIR} ${entt_BINARY_DIR})
     endif ()
 endif ()
 # Our Project
-add_executable(2d-rogue-like src/main.cpp)
+add_executable(2d-rogue-like
+        src/main.cpp
+        src/core/app.hpp
+        src/core/app.cpp
+        src/components/position.hpp
+        src/components/velocity.hpp
+        src/components/size.hpp
+        src/components/speed.hpp
+        src/core/game.cpp
+        src/core/game.hpp
+        src/components/player.hpp
+)
 
 target_link_libraries(${PROJECT_NAME} raylib EnTT::EnTT)
 
