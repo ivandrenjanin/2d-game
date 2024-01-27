@@ -63,6 +63,9 @@ add_executable(2d-rogue-like
         src/components/size_radial.hpp
         src/systems/movement_system.cpp
         src/systems/movement_system.hpp
+        src/components/cursor_direction.hpp
+        src/systems/render_system.cpp
+        src/systems/render_system.hpp
 )
 
 target_link_libraries(${PROJECT_NAME} raylib EnTT::EnTT)

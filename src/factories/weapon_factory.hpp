@@ -10,6 +10,7 @@
 #include "components/hit_points.hpp"
 #include "components/weapon.hpp"
 #include "components/shape_color.hpp"
+#include "components/cursor_direction.hpp"
 
 class WeaponFactory {
 public:
@@ -22,8 +23,9 @@ public:
         registry.emplace<Weapon>(weaponEntity, owner);
         registry.emplace<Position>(weaponEntity, ownerCenter);
         registry.emplace<Size>(weaponEntity, Vector2{ownerSize.x / 4, ownerSize.y / 4});
-        registry.emplace<ShapeColor>(weaponEntity, YELLOW);
-
+        registry.emplace<ShapeColor>(weaponEntity, orange);
+        registry.emplace<CursorDirection>(weaponEntity, Vector2{0, 0});
+        
         return weaponEntity;
     }
 };
